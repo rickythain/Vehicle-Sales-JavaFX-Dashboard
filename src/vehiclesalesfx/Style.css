@@ -1,0 +1,45 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 22-Apr-2021, 02:35:05
+    Author     : Ricky Thain
+*/
+
+.check-box {
+    -fx-font: 12 'Lucida Sans Unicode';
+}
+
+.radio-button {
+    -fx-font: 12 'Lucida Sans Unicode';
+}
+
+.axis {
+    -fx-font: 10 'Lucida Sans Unicode';
+    -fx-tick-label-font: 10 'Lucida Sans Unicode';
+}
+
+.chart {
+    -fx-font: 12 'Lucida Sans Unicode';
+}
+
+.label {
+    -fx-font: 12 'Lucida Sans Unicode';
+}
+
+.button {
+    -fx-font: 12 'Lucida Sans Unicode';
+}
+
+.tileSummary {
+    -fx-border-width: 2px;
+    -fx-border-color: black;
+    -fx-border-radius: 5px;
+}
+
+.labelSummaryHighlight {
+    -fx-font-size: 30px;
+    -fx-font-weight: bold;
+}
