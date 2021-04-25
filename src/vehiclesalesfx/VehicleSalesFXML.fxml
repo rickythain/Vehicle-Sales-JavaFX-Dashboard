@@ -6,16 +6,15 @@
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
@@ -27,7 +26,6 @@
    <children>
       <StackPane>
          <children>
-            <VBox fx:id="VBoxLoading" style="-fx-background-color: #eeeeee;" />
             <BorderPane>
                <center>
                   <VBox prefHeight="820.0" BorderPane.alignment="CENTER">
@@ -35,21 +33,24 @@
                         <Insets top="10.0" />
                      </opaqueInsets>
                      <children>
-                        <ScrollPane hbarPolicy="NEVER" prefHeight="820.0">
+                        <ScrollPane hbarPolicy="NEVER" prefHeight="820.0" style="-fx-background-color: #ffffff;">
                           <content>
-                            <AnchorPane minHeight="0.0" minWidth="0.0">
+                            <AnchorPane minHeight="0.0" minWidth="0.0" style="-fx-background-color: #ffffff;">
                                  <children>
                                     <VBox layoutX="20.0" prefHeight="819.0" prefWidth="1248.0">
                                        <children>
                                           <HBox prefHeight="454.0" prefWidth="1238.0" spacing="10.0">
                                              <children>
-                                                <LineChart fx:id="LineChart3" prefHeight="400.0" prefWidth="764.0">
+                                                <LineChart fx:id="LineChart3" prefHeight="400.0" prefWidth="764.0" style="-fx-border-color: #d5d2cb; -fx-border-radius: 5;" title="Quarterly Sales Summary">
                                                   <xAxis>
-                                                    <CategoryAxis animated="false" side="BOTTOM" />
+                                                    <CategoryAxis animated="false" label="Quarter" side="BOTTOM" />
                                                   </xAxis>
                                                   <yAxis>
-                                                    <NumberAxis side="LEFT" />
+                                                    <NumberAxis label="Quantity" side="LEFT" />
                                                   </yAxis>
+                                                   <padding>
+                                                      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                   </padding>
                                                 </LineChart>
                                                 <TableView fx:id="TableView1" prefHeight="400.0" prefWidth="409.0">
                                                   <columns>
@@ -70,28 +71,34 @@
                                                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                              </padding>
                                              <children>
-                                                <VBox prefHeight="350.0" prefWidth="390.0">
+                                                <VBox prefHeight="350.0" prefWidth="390.0" style="-fx-border-color: #d5d2cb; -fx-border-radius: 5;">
                                                    <children>
-                                                      <Label text="Sales of vehicles in" />
                                                       <HBox fx:id="HBoxPieChart1" />
                                                    </children>
+                                                   <padding>
+                                                      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                   </padding>
                                                 </VBox>
-                                                <VBox prefHeight="350.0" prefWidth="390.0">
+                                                <VBox prefHeight="350.0" prefWidth="390.0" style="-fx-border-color: #d5d2cb; -fx-border-radius: 5;">
                                                    <children>
-                                                      <Label text="Sales of vehicles in" />
                                                       <HBox fx:id="HBoxPieChart2" />
                                                    </children>
+                                                   <padding>
+                                                      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                   </padding>
                                                 </VBox>
                                                 <VBox prefHeight="350.0" prefWidth="390.0">
                                                    <children>
-                                                      <Label text="sales of vehicles by region and year" />
-                                                      <BarChart fx:id="BarChart2" legendVisible="false">
+                                                      <BarChart fx:id="BarChart2" legendVisible="false" style="-fx-border-color: #d5d2cb; -fx-border-radius: 5;" title="Sales by Quarter">
                                                         <xAxis>
-                                                          <CategoryAxis animated="false" side="BOTTOM" />
+                                                          <CategoryAxis animated="false" label="Quarter" side="BOTTOM" />
                                                         </xAxis>
                                                         <yAxis>
-                                                          <NumberAxis side="LEFT" />
+                                                          <NumberAxis label="Quantity" side="LEFT" />
                                                         </yAxis>
+                                                         <padding>
+                                                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                         </padding>
                                                       </BarChart>
                                                    </children>
                                                 </VBox>
@@ -110,25 +117,18 @@
                   </VBox>
                </center>
                <top>
-                  <HBox BorderPane.alignment="CENTER">
+                  <HBox style="-fx-border-color: #d5d2cb;" BorderPane.alignment="CENTER">
                      <children>
-                        <Label text="BI DASHBOARD">
+                        <Label id="dashboardTitle" prefHeight="60.0" prefWidth="502.0" text="BUSINESS INTELLIGENCE DASHBOARD">
                            <padding>
-                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                              <Insets bottom="15.0" left="50.0" right="15.0" top="15.0" />
                            </padding>
                         </Label>
-                        <MenuBar nodeOrientation="RIGHT_TO_LEFT" HBox.hgrow="ALWAYS">
-                          <menus>
-                            <Menu mnemonicParsing="false" text="Exit">
-                                 <items>
-                                    <MenuItem fx:id="MenuExit" mnemonicParsing="false" onAction="#menuExitOnAction" text="Exit" />
-                                 </items>
-                            </Menu>
-                          </menus>
-                           <padding>
-                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                           </padding>
-                        </MenuBar>
+                        <Pane prefHeight="60.0" prefWidth="1046.0">
+                           <children>
+                              <Button id="btnExit" alignment="CENTER" contentDisplay="CENTER" layoutX="952.0" layoutY="9.0" mnemonicParsing="false" onAction="#menuExitOnAction" prefHeight="43.0" prefWidth="80.0" text="Exit" textAlignment="CENTER" />
+                           </children>
+                        </Pane>
                      </children>
                   </HBox>
                </top>
@@ -139,9 +139,9 @@
                            <children>
                               <VBox>
                                  <children>
-                                    <Label text="Grand Total Sales" />
+                                    <Label styleClass="heading1" text="Grand Total Sales" />
                                     <Label text="Accumulation of overall sales." />
-                                    <Label fx:id="LabelGrandTotal" styleClass="labelSummaryHighlight" text="Label" />
+                                    <Label fx:id="LabelGrandTotal" prefHeight="48.0" prefWidth="212.0" styleClass="labelSummaryHighlight" text="Label" />
                                  </children>
                               </VBox>
                            </children>
@@ -153,9 +153,9 @@
                            <children>
                               <VBox>
                                  <children>
-                                    <Label text="Current Total Sales" />
+                                    <Label styleClass="heading1" text="Current Total Sales" />
                                     <Label fx:id="LabelCurrentYear" text="Total sales in ..." />
-                                    <Label fx:id="LabelCurrentSales" styleClass="labelSummaryHighlight" text="Label" />
+                                    <Label fx:id="LabelCurrentSales" prefHeight="48.0" prefWidth="210.0" styleClass="labelSummaryHighlight" text="Label" />
                                  </children>
                               </VBox>
                            </children>
@@ -167,9 +167,9 @@
                            <children>
                               <VBox>
                                  <children>
-                                    <Label text="Growth in Sales" />
+                                    <Label styleClass="heading1" text="Growth in Sales" />
                                     <Label fx:id="LabelGrowthYears" text="Percentage growth from year to year" />
-                                    <Label fx:id="LabelGrowthRate" styleClass="labelSummaryHighlight" text="Label" />
+                                    <Label fx:id="LabelGrowthRate" prefHeight="48.0" prefWidth="212.0" styleClass="labelSummaryHighlight" text="Label" />
                                  </children>
                               </VBox>
                            </children>
@@ -177,37 +177,62 @@
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </padding>
                         </TilePane>
-                        <VBox style="-fx-border-color: black; -fx-border-image-width: 2px; -fx-border-radius: 5px;">
+                        <VBox id="inputSection" styleClass="tileSummary">
                            <children>
-                              <TilePane prefWidth="200.0" style="-fx-background-color: #d3d3d3;">
+                              <Label styleClass="heading1" text="Inputs" />
+                              <TilePane prefWidth="200.0">
                                  <children>
-                                    <HBox fx:id="HBoxVehicleChkBox" spacing="10.0">
-                                       <padding>
-                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                       </padding>
-                                    </HBox>
+                                    <VBox>
+                                       <children>
+                                          <Label text="Vehicle" />
+                                          <HBox fx:id="HBoxVehicleChkBox" spacing="10.0">
+                                             <padding>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                             </padding>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
                                  </children>
+                                 <padding>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </padding>
                               </TilePane>
-                              <TilePane prefWidth="200.0" style="-fx-background-color: #d3d3d3;">
+                              <TilePane prefWidth="200.0">
                                  <children>
-                                    <HBox fx:id="HBoxCombo" spacing="10.0">
-                                       <padding>
-                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                       </padding>
-                                    </HBox>
+                                    <VBox>
+                                       <children>
+                                          <Label text="Region" />
+                                          <HBox fx:id="HBoxCombo" spacing="10.0" />
+                                       </children>
+                                    </VBox>
                                  </children>
+                                 <padding>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </padding>
                               </TilePane>
                               <TilePane>
                                  <children>
-                                    <HBox fx:id="HBoxComboYear" prefHeight="100.0" prefWidth="200.0" />
+                                    <VBox>
+                                       <children>
+                                          <Label text="Year" />
+                                          <HBox fx:id="HBoxComboYear" />
+                                       </children>
+                                    </VBox>
                                  </children>
+                                 <padding>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </padding>
                               </TilePane>
                            </children>
+                           <padding>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </padding>
                         </VBox>
                      </children>
                   </VBox>
                </left>
             </BorderPane>
+            <VBox fx:id="VBoxLoading" style="-fx-background-color: #ffffff;" />
          </children>
       </StackPane>
    </children>

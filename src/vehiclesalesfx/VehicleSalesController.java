@@ -26,31 +26,26 @@ import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.chart.BarChart;
-import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.PieChart.Data;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
 import javafx.scene.control.ProgressIndicator;
-import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 
 /**
  * FXML Controller class
@@ -68,14 +63,11 @@ public class VehicleSalesController implements Initializable {
     private static List<String> regions;
             
     private DashService dashService;
-    private CheckBox[] checkBoxes;
     private CheckBox[] checkBoxesVehicle;
     private ComboBox comboBoxesRegion;
-    private ComboBox comboBoxesRegionsPC;
-    private ComboBox comboBoxesYearsBC;
-    private ComboBox comboBoxesRegionsBC;
     
     private ProgressIndicator ProgressIndicator1;
+    private Label WelcomeLabel;
     
     private ComboBox comboBoxesYears;
     private PieChart pieChart1 = new PieChart();
@@ -160,7 +152,7 @@ public class VehicleSalesController implements Initializable {
                 constructComboBoxes();
                 constructCheckBoxes();
                 getAggregateValues();
-                //constructBCYearRegionSeries();
+                
                 HBoxPieChart1.getChildren().add(pieChart1);
                 HBoxPieChart2.getChildren().add(pieChart2);
                 
@@ -177,16 +169,20 @@ public class VehicleSalesController implements Initializable {
         TableColumn5.setCellValueFactory(new PropertyValueFactory<Sales, Integer>("Quantity"));
         
         ProgressIndicator1 = new ProgressIndicator();
-        //ProgressIndicator1.visibleProperty().bind(dashService.runningProperty());
-        VBoxLoading.visibleProperty().bind(dashService.runningProperty());
+        ProgressIndicator1.setStyle(" -fx-progress-color: #5BB05B;");
+        WelcomeLabel = new Label("Welcome to BI Dashboard");
+        WelcomeLabel.setStyle("-fx-font: 30 'Gill Sans';");
+        VBoxLoading.setSpacing(10);
         VBoxLoading.setAlignment(Pos.CENTER);
-        VBoxLoading.getChildren().add(ProgressIndicator1);
+        
+        VBoxLoading.visibleProperty().bind(dashService.runningProperty());
+        VBoxLoading.getChildren().addAll(WelcomeLabel, ProgressIndicator1);
         
         dashService.start();
     }
     
     private void constructCheckBoxes() {
-        
+        // construct vehicle checkboxes 
         checkBoxesVehicle = new CheckBox[vehicles.size()];
         for(byte index = 0; index < vehicles.size(); index++){
             checkBoxesVehicle[index] = new CheckBox(String.valueOf(vehicles.get(index)));
@@ -194,19 +190,16 @@ public class VehicleSalesController implements Initializable {
             checkBoxesVehicle[index].addEventFilter(ActionEvent.ACTION, new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent e) {
-                    // System.out.println("Firstly, Event Filters !");
                 }
             });
             checkBoxesVehicle[index].addEventHandler(ActionEvent.ACTION, new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent e) {
-                    // System.out.println("Secondly, Event Handlers !");
                 }
             });
             checkBoxesVehicle[index].setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent e) {                    
-                    // System.out.println("Thirdly, Convenience Methods !");
                     constructSeries();
                 }
             });
@@ -214,65 +207,44 @@ public class VehicleSalesController implements Initializable {
         }
         
         AnchorPane1.getScene().getWindow().sizeToScene();
-        //constructSeries();
     }
     
     private void constructComboBoxes() {
-            ArrayList<String> regionsAndAll = new ArrayList<String>();
-            regionsAndAll.add("All");
-            regionsAndAll.addAll(regions);
-            comboBoxesRegion = new ComboBox(FXCollections.observableList(regionsAndAll));
-            
-            comboBoxesRegion.getSelectionModel().selectFirst();
-            
-            comboBoxesRegion.setOnAction(new EventHandler<ActionEvent>(){
+        
+        // construct regions combo box
+        ArrayList<String> regionsAndAll = new ArrayList<String>();
+        regionsAndAll.add("All regions");
+        regionsAndAll.addAll(regions);
+        comboBoxesRegion = new ComboBox(FXCollections.observableList(regionsAndAll));
+        comboBoxesRegion.getSelectionModel().selectFirst();
+        comboBoxesRegion.setOnAction(new EventHandler<ActionEvent>(){
 
-                @Override
-                public void handle(ActionEvent e) {
-                    constructSeries();
-                }
-                
-            });
-            HBoxCombo.getChildren().add(comboBoxesRegion);
-            
-            
-            comboBoxesYearsBC = new ComboBox(FXCollections.observableList(years));
-            comboBoxesYearsBC.getSelectionModel().selectFirst();
-            comboBoxesYearsBC.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                constructSeries();
+            }
 
-                @Override
-                public void handle(ActionEvent event) {
-                    constructBCYearRegionSeries();
-                }
-        
-            });
+        });
+        HBoxCombo.getChildren().add(comboBoxesRegion);
             
-            ArrayList<String> yearsAndAll = new ArrayList<String>();
-            yearsAndAll.add("All years");
-            years.forEach(year -> {yearsAndAll.add(year.toString());});
-            comboBoxesYears = new ComboBox(FXCollections.observableList(yearsAndAll));
-            comboBoxesYears.getSelectionModel().selectFirst();
-            System.out.println("selected year: " + comboBoxesYears.getSelectionModel().getSelectedItem().toString());
-            comboBoxesYears.setOnAction(new EventHandler<ActionEvent>() {
+            
+        // construct years combo box
+        ArrayList<String> yearsAndAll = new ArrayList<String>();
+        yearsAndAll.add("All years");
+        years.forEach(year -> {yearsAndAll.add(year.toString());});
+        comboBoxesYears = new ComboBox(FXCollections.observableList(yearsAndAll));
+        comboBoxesYears.getSelectionModel().selectFirst();
+        comboBoxesYears.setOnAction(new EventHandler<ActionEvent>() {
 
-                @Override
-                public void handle(ActionEvent event) {
-                    constructSeries();
-                }
-        
-            });
-            HBoxComboYear.getChildren().add(comboBoxesYears);
-            
-            AnchorPane1.getScene().getWindow().sizeToScene();
-            //constructSeries();
-    }
-    
-    private void constructPieCharts() {
-        //constructPCYearsSeries();
-        constructPCRegionsSeries();
-        System.out.println("pie: " + pieChart1.getData().toString());
-        
-        
+            @Override
+            public void handle(ActionEvent event) {
+                constructSeries();
+            }
+
+        });
+        HBoxComboYear.getChildren().add(comboBoxesYears);
+
+        AnchorPane1.getScene().getWindow().sizeToScene();
     }
     
     
@@ -282,15 +254,16 @@ public class VehicleSalesController implements Initializable {
         Integer lastYear = currentYear - 1;
         Integer grandTotal = 0;
         
+        // get grand total of sales of all regions, vehicles, and years
         List<Sales> allSales = sales.stream().collect(Collectors.toList());
         for(Sales sale:allSales){
             grandTotal += sale.getQuantity();
         }
         
-        System.out.println("grand total: " + grandTotal);
-        
         LabelGrandTotal.setText(grandTotal.toString());
         
+        // get total sales of all vehicles and regions in current year
+        // current year is the latest year found in the database
         LabelCurrentYear.setText("Total sales in " + currentYear);
         Integer totalCurrentSales = 0;
         List<Sales> sales1 = sales.stream().filter(o -> o.getYear().equals(currentYear)).collect(Collectors.toList());
@@ -299,6 +272,7 @@ public class VehicleSalesController implements Initializable {
         }
         LabelCurrentSales.setText(totalCurrentSales.toString());
         
+        // get growth rate by subtracting current year's and previous year's sales, then dividing it with previous year's sales
         LabelGrowthYears.setText("Rate of growth from " + lastYear + " to " + currentYear);
         Integer totalLastYearSales = 0;
         List<Sales> sales2 = sales.stream().filter(o -> o.getYear().equals(lastYear)).collect(Collectors.toList());
@@ -308,14 +282,18 @@ public class VehicleSalesController implements Initializable {
         Float growthRate = (totalCurrentSales - totalLastYearSales)/(float)totalLastYearSales * 100;
         System.out.println("c and old: " + totalCurrentSales + " " + totalLastYearSales);
         LabelGrowthRate.setText(String.format("%.2f %s", growthRate, "%"));
+        // set label color depending on growth rate
+        if(growthRate < 0) {
+            LabelGrowthRate.setTextFill(Color.RED);
+        } else {
+            LabelGrowthRate.setTextFill(Color.GREEN);
+        }
         
     }
     
     private void constructSeries() {
         
         TableView1.getItems().clear();
-        
-        // for line chart 3
         LineChart3.getData().clear();
         Integer vehicleQuantity = 0;
         Integer vehicleQuantityByVehicle = 0;
@@ -323,14 +301,13 @@ public class VehicleSalesController implements Initializable {
         ObservableList<Data> salesPCVehicles = FXCollections.observableArrayList();
         ObservableList<Data> salesPCRegions = FXCollections.observableArrayList();
         
-        mainloop:
+        // get and insert data into LineChart3 (summary of sales chart), TableView1, and pieChart1 (sales by vehicle chart)
         for(CheckBox chkVehicle:checkBoxesVehicle){
             if(chkVehicle.isSelected()){
                 XYChart.Series lineSeries = new XYChart.Series();
                 lineSeries.setName(chkVehicle.getText());
                 
-                
-                if(comboBoxesRegion.getValue().toString().equalsIgnoreCase("all")){
+                if(comboBoxesRegion.getValue().toString().equalsIgnoreCase("All regions")){
                     
                     if(comboBoxesYears.getValue().toString().equalsIgnoreCase("all years")){
                         vehicleQuantityByVehicle = 0;
@@ -417,11 +394,12 @@ public class VehicleSalesController implements Initializable {
                 salesPCVehicles.add(new PieChart.Data(chkVehicle.getText(), vehicleQuantityByVehicle));
             }
         }
+        
         pieChart1.setData(salesPCVehicles);
         pieChart1.setTitle("Sales by Vehicle");
         
-        // for pie chart of sales by regionx
-        if(comboBoxesRegion.getValue().toString().equalsIgnoreCase("all")){
+        // get and insert data into pieChart2 or sales by region chart
+        if(comboBoxesRegion.getValue().toString().equalsIgnoreCase("All regions")){
             for(String region:regions){
                 vehicleQuantityByRegion = 0;
                 if(comboBoxesYears.getValue().toString().equalsIgnoreCase("all years")){
@@ -486,7 +464,7 @@ public class VehicleSalesController implements Initializable {
         pieChart2.setData(salesPCRegions);
         pieChart2.setTitle("Sales by Region");
         
-        // for bar chart sales by kuarters
+        // get data and insert data into barchart2 or sales by quarter chart
         BarChart2.getData().clear();
         Integer vehicleQuantityByQuarter = 0;
         XYChart.Series barSeries = new XYChart.Series();
@@ -495,25 +473,28 @@ public class VehicleSalesController implements Initializable {
             vehicleQuantityByQuarter = 0;
             for(CheckBox chkVehicle:checkBoxesVehicle){
                 if(chkVehicle.isSelected()){
-                    if(comboBoxesRegion.getValue().toString().equalsIgnoreCase("all") && comboBoxesYears.getValue().toString().equalsIgnoreCase("all years")){
+                    if(comboBoxesRegion.getValue().toString().equalsIgnoreCase("All regions") && comboBoxesYears.getValue().toString().equalsIgnoreCase("all years")){
                         List<Sales> saleList = sales.stream()
                                 .filter(o -> o.getQTR().equals(quarter))
+                                .filter(o -> o.getVehicle().equals(chkVehicle.getText()))
                                 .collect(Collectors.toList());
                         for(Sales sale:saleList){
                             vehicleQuantityByQuarter += sale.getQuantity();
                         }
-                    } else if(comboBoxesRegion.getValue().toString().equalsIgnoreCase("all") && !(comboBoxesYears.getValue().toString().equalsIgnoreCase("all years"))){
+                    } else if(comboBoxesRegion.getValue().toString().equalsIgnoreCase("All regions") && !(comboBoxesYears.getValue().toString().equalsIgnoreCase("all years"))){
                         List<Sales> saleList = sales.stream()
                                 .filter(o -> o.getQTR().equals(quarter))
                                 .filter(o -> o.getYear().equals(Integer.valueOf(comboBoxesYears.getValue().toString())))
+                                .filter(o -> o.getVehicle().equals(chkVehicle.getText()))
                                 .collect(Collectors.toList());
                         for(Sales sale:saleList){
                             vehicleQuantityByQuarter += sale.getQuantity();
                         }
-                    } else if(!(comboBoxesRegion.getValue().toString().equalsIgnoreCase("all")) && comboBoxesYears.getValue().toString().equalsIgnoreCase("all years")){
+                    } else if(!(comboBoxesRegion.getValue().toString().equalsIgnoreCase("All regions")) && comboBoxesYears.getValue().toString().equalsIgnoreCase("all years")){
                         List<Sales> saleList = sales.stream()
                                 .filter(o -> o.getQTR().equals(quarter))
                                 .filter(o -> o.getRegion().equals(comboBoxesRegion.getValue().toString()))
+                                .filter(o -> o.getVehicle().equals(chkVehicle.getText()))
                                 .collect(Collectors.toList());
                         for(Sales sale:saleList){
                             vehicleQuantityByQuarter += sale.getQuantity();
@@ -523,55 +504,19 @@ public class VehicleSalesController implements Initializable {
                                 .filter(o -> o.getQTR().equals(quarter))
                                 .filter(o -> o.getRegion().equals(comboBoxesRegion.getValue().toString()))
                                 .filter(o -> o.getYear().equals(Integer.valueOf(comboBoxesYears.getValue().toString())))
+                                .filter(o -> o.getVehicle().equals(chkVehicle.getText()))
                                 .collect(Collectors.toList());
                         for(Sales sale:saleList){
                             vehicleQuantityByQuarter += sale.getQuantity();
                         }
+                        
+                        //System.out.println("vehicle: " + chkVehicle.getText() + " region: " + comboBoxesRegion.getValue().toString() + " year " + comboBoxesYears.getValue().toString());
                     }
                 }
             }
             barSeries.getData().add(new XYChart.Data<>(quarter.toString(), vehicleQuantityByQuarter));
         }
         BarChart2.getData().add(barSeries);
-        BarChart2.setTitle("Vehicle sales by quarter");
-    }
-    
-    private void constructPCRegionsSeries() {
-        // insert data into pie chart vehicles in a region
-        for (String region:regions){
-            Integer totalSalesPerVehicle =  0;
-            if (comboBoxesRegionsPC.getSelectionModel().getSelectedItem().equals(region)){
-                ObservableList<Data> salesList = FXCollections.observableArrayList();
-                for (String vehicle:vehicles){
-                    List<Sales> sales5 = sales.stream().filter(o -> o.getRegion().equals(region)).filter(o -> o.getVehicle().equals(vehicle)).collect(Collectors.toList());
-                    for(Sales sale:sales5){
-                        totalSalesPerVehicle += sale.getQuantity();
-                    }
-                    salesList.add(new PieChart.Data(vehicle, totalSalesPerVehicle));
-                }
-                System.out.println("sales list: " + salesList);
-                pieChart2.setData(salesList);
-        pieChart2.setTitle("Sales of ");
-            }
-        }
-    }
-    
-    private void constructBCYearRegionSeries() {
-        BarChart2.getData().clear();
-        Integer totalSales = 0;
-        XYChart.Series series = new XYChart.Series();
-        for(String vehicle:vehicles){
-            
-            totalSales = 0;
-            List<Sales> sales5 = sales.stream().filter(o -> o.getYear().equals(Integer.valueOf(comboBoxesYearsBC.getSelectionModel().getSelectedItem().toString()))).filter(o -> o.getRegion().equals(comboBoxesRegionsBC.getSelectionModel().getSelectedItem().toString())).filter(o -> o.getVehicle().equals(vehicle)).collect(Collectors.toList());
-            for (Sales sale:sales5){
-                totalSales += sale.getQuantity();
-            }
-            series.getData().add(new XYChart.Data<>(vehicle, totalSales));
-            
-        }
-        BarChart2.getData().add(series);
-        BarChart2.setTitle("Sales of each vehicle in " + comboBoxesRegionsBC.getSelectionModel().getSelectedItem().toString() + " in " + comboBoxesYearsBC.getSelectionModel().getSelectedItem().toString());
     }
     
     private static class DashService extends Service<String>{
@@ -617,12 +562,6 @@ public class VehicleSalesController implements Initializable {
                 }
             };
         }
-    }
-    
-    @FXML
-    public void radioBtnTimeOnAction(Event e) {
-        System.out.println("radio btn on action");
-        constructSeries();
     }
     
     @FXML
